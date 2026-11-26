@@ -1,0 +1,20 @@
+{
+  "folderColumns": 0,
+  "scriptColumns": 0,
+  "appColumns": 0,
+  "otherColumns": 0,
+  "shortcutsToFoldersGoWithFolders": true,
+  "plainToolsGoWithScripts": true,
+  "commandShellNames": [ "cmd.exe", "powershell.exe", "pwsh.exe", "wsl.exe", "bash.exe", "wt.exe" ],
+  "scriptExtensions": [ "bat", "cmd", "ps1", "vbs", "wsf", "sh", "py" ],
+  "appExtensions": [ "lnk", "url", "exe", "appref-ms" ],
+  "otherGroups": {
+    "Images": [ "png", "jpg", "jpeg", "gif", "bmp", "svg", "webp", "ico" ],
+    "Documents": [ "pdf", "doc", "docx", "txt", "md", "rtf", "odt" ],
+    "Spreadsheets": [ "xls", "xlsx", "csv" ],
+    "Presentations": [ "ppt", "pptx" ],
+    "Archives": [ "zip", "7z", "rar", "tar", "gz" ],
+    "Data and code": [ "json", "xml", "yml", "yaml", "sql", "cs", "js", "ts", "log", "code-workspace" ],
+    "Installers": [ "msi", "msix" ]
+  }
+}
