@@ -1,0 +1,23 @@
+README.md
+  s_d9f60225c44b80::t_81491fff9b79c5 97-98
+lib/DesktopNative.cs
+  s_d9f60225c44b80::t_938a18b0fae08c 131,240
+Arrange-Desktop.ps1
+  s_d9f60225c44b80::t_4e7730293a4c47 260-262,264-265,267-270,280,290-304,306
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "be4ba281a8950a1d627bda377c8dd9fcdc935935",
+  "prompts": {},
+  "sessions": {
+    "s_d9f60225c44b80": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "a2d262e0-43ca-42cc-a694-2913e14ab461",
+        "model": "unknown"
+      },
+      "human_author": "dawood-myob <dawood.ali@myob.com>"
+    }
+  }
+}
