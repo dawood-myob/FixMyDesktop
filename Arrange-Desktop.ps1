@@ -76,8 +76,8 @@ function Select-Monitor {
         return $all[$i - 1]
     }
     if ($Screen -eq 'Primary') { return @($all | Where-Object Primary)[0] }
-    # Largest by pixel area; primary wins ties.
-    @($all | Sort-Object @{ Expression = 'Area'; Descending = $true }, @{ Expression = 'Primary'; Descending = $true })[0]
+    # Largest by on-screen (scaled) size; ties go to the primary screen.
+    @($all | Sort-Object @{ Expression = 'EffectiveArea'; Descending = $true }, @{ Expression = 'Primary'; Descending = $true })[0]
 }
 
 # Maps what the desktop shows (file names, with hidden extensions) to the real file.

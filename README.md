@@ -4,7 +4,8 @@ Switching between home and office monitors scrambles your desktop icons. **FixMy
 predictable layout with one double-click, or automatically every time your displays change.
 
 - No install, no admin rights: just PowerShell (built into Windows) and a small C# helper compiled on the fly.
-- Picks the **largest screen** when you have several (laptop + 2–3 monitors), or the only screen if there is one.
+- Picks the **largest screen as it appears** (after display scaling, so a 1920×1200 laptop at 150% counts as 1280×800)
+  when you have several, or the only screen if there is one. Ties go to the primary screen.
 - Works with **mixed DPI scaling** (e.g. laptop at 150% + ultrawide at 100%).
 - Every run saves a backup, so `-Restore` undoes it.
 

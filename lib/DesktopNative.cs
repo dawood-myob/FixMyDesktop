@@ -14,6 +14,8 @@ namespace FixMyDesktop
         public bool Primary;
         public int Dpi = 96;
         public long Area { get { return (long)(Right - Left) * (Bottom - Top); } }
+        // Size as it appears on screen: pixels divided by the scale factor, so a 1920x1200 laptop at 150% counts as 1280x800.
+        public double EffectiveArea { get { double s = 96.0 / Dpi; return Area * s * s; } }
     }
 
     public static class Monitors
