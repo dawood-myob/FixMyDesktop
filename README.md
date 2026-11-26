@@ -94,7 +94,8 @@ Edit [`config.json`](config.json):
 - Before each arrange, previous positions are saved to `%LOCALAPPDATA%\FixMyDesktop\last-layout.json`
   (it holds the state before the most recent run).
 - "Auto arrange icons" is switched off if it was on, because Windows can't place icons freely otherwise.
-  "Align icons to grid" is respected and left as you have it.
+  "Align icons to grid" is paused while icons are placed (Explorer's grid starts at the top-left of the whole
+  multi-monitor desktop, which would leave gaps at the chosen screen's edges) and switched back on afterwards.
 
 ## How it works
 

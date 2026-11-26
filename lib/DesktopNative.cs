@@ -128,6 +128,7 @@ namespace FixMyDesktop
         const uint LVM_SETITEMPOSITION = 0x100F;
         const uint LVM_GETITEMPOSITION = 0x1010;
         const uint LVM_GETITEMSPACING = 0x1033;
+        const uint LVM_SETEXTENDEDLISTVIEWSTYLE = 0x1036;
         const uint LVM_GETEXTENDEDLISTVIEWSTYLE = 0x1037;
         const uint LVM_GETITEMTEXTW = 0x1073;
         const int GWL_STYLE = -16;
@@ -236,6 +237,7 @@ namespace FixMyDesktop
         public bool SnapToGrid
         {
             get { return (SendMessage(hwnd, LVM_GETEXTENDEDLISTVIEWSTYLE, IntPtr.Zero, IntPtr.Zero).ToInt32() & LVS_EX_SNAPTOGRID) != 0; }
+            set { SendMessage(hwnd, LVM_SETEXTENDEDLISTVIEWSTYLE, new IntPtr(LVS_EX_SNAPTOGRID), new IntPtr(value ? LVS_EX_SNAPTOGRID : 0)); }
         }
 
         public string GetName(int index)

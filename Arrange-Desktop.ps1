@@ -257,13 +257,17 @@ function Invoke-Arrange {
         $cw = [int][Math]::Round($cell[0] * $scale); $ch = [int][Math]::Round($cell[1] * $scale)
         if ($cw -lt 20 -or $ch -lt 20) { throw "Unexpected icon cell size ${cw}x${ch}." }
 
-        # Work area (excludes taskbar) in list-view coordinates, converted to whole icon cells.
+        # Cells are counted from the chosen screen's own work-area corner (not the whole desktop's), so the layout is
+        # flush with that screen's edges whatever its position. Leftover pixels push right/bottom blocks to the edge.
+        $workW = $monitor.WorkRight - $monitor.WorkLeft; $workH = $monitor.WorkBottom - $monitor.WorkTop
         $g = @{
-            ColStart = [int][Math]::Ceiling(($monitor.WorkLeft - $origin[0]) / $cw)
-            ColEnd   = [int][Math]::Floor(($monitor.WorkRight - $origin[0]) / $cw)
-            RowStart = [int][Math]::Ceiling(($monitor.WorkTop - $origin[1]) / $ch)
-            RowEnd   = [int][Math]::Floor(($monitor.WorkBottom - $origin[1]) / $ch)
+            ColStart = 0; ColEnd = [int][Math]::Floor($workW / $cw)
+            RowStart = 0; RowEnd = [int][Math]::Floor($workH / $ch)
         }
+        $baseX = $monitor.WorkLeft - $origin[0]; $baseY = $monitor.WorkTop - $origin[1]
+        $leftoverX = $workW - $g.ColEnd * $cw; $leftoverY = $workH - $g.RowEnd * $ch
+        $px = { param($it) $baseX + $it.Col * $cw + $(if ($it.Col * 2 -ge $g.ColEnd) { $leftoverX } else { 0 }) }
+        $py = { param($it) $baseY + $it.Row * $ch + $(if ($it.Row * 2 -ge $g.RowEnd) { $leftoverY } else { 0 }) }
 
         $items = Get-DesktopItems $list $cfg
         if ($items.Count -eq 0) { Write-Host 'Desktop has no icons.'; return }
@@ -273,7 +277,7 @@ function Invoke-Arrange {
         Write-Host ("Target screen: {0}x{1} at ({2},{3}){4}; icon cell {5}x{6}; {7} icons" -f $width, $height, $monitor.Left, $monitor.Top, $(if ($monitor.Primary) { ' [primary]' } else { '' }), $cw, $ch, $items.Count)
 
         if ($DryRun) {
-            $items | Sort-Object Category, Group, Key | Format-Table Name, Category, Group, @{ n = 'X'; e = { $_.Col * $cw } }, @{ n = 'Y'; e = { $_.Row * $ch } } -AutoSize
+            $items | Sort-Object Category, Group, Key | Format-Table Name, Category, Group, @{ n = 'X'; e = { & $px $_ } }, @{ n = 'Y'; e = { & $py $_ } } -AutoSize
             Write-Host 'Dry run: nothing moved.'
             return
         }
@@ -283,22 +287,23 @@ function Invoke-Arrange {
             $list.AutoArrange = $false
             Write-Host 'Turned off "Auto arrange icons" (needed to place icons freely).'
         }
-        foreach ($it in $items) { $list.SetPosition($it.Index, $it.Col * $cw, $it.Row * $ch) }
+        # Explorer's grid starts at the top-left of the whole multi-monitor desktop, so snapping would leave gaps.
+        $snap = $list.SnapToGrid
+        if ($snap) { $list.SnapToGrid = $false }
+        try {
+            foreach ($it in $items) { $list.SetPosition($it.Index, (& $px $it), (& $py $it)) }
 
-        # Windows nudges an icon away when another is dropped on its cell, so verify and re-place stragglers.
-        for ($pass = 1; $pass -le 10; $pass++) {
-            $pos = @{}
-            foreach ($it in $items) { $pos[$it.Index] = $list.GetPosition($it.Index) }
-            # The grid has a small fixed offset; the most common (actual - requested) delta is that offset.
-            $deltas = $items | ForEach-Object { '{0},{1}' -f ($pos[$_.Index][0] - $_.Col * $cw), ($pos[$_.Index][1] - $_.Row * $ch) }
-            $offset = ($deltas | Group-Object | Sort-Object Count -Descending | Select-Object -First 1).Name -split ','
-            $stray = @($items | Where-Object {
-                    [Math]::Abs($pos[$_.Index][0] - $_.Col * $cw - [int]$offset[0]) -gt 2 -or
-                    [Math]::Abs($pos[$_.Index][1] - $_.Row * $ch - [int]$offset[1]) -gt 2 })
-            if ($stray.Count -eq 0) { break }
-            foreach ($it in $stray) { $list.SetPosition($it.Index, $it.Col * $cw, $it.Row * $ch) }
+            # Windows can nudge an icon away when another is dropped on its spot, so verify and re-place stragglers.
+            for ($pass = 1; $pass -le 10; $pass++) {
+                $stray = @($items | Where-Object {
+                        $p = $list.GetPosition($_.Index)
+                        [Math]::Abs($p[0] - (& $px $_)) -gt 2 -or [Math]::Abs($p[1] - (& $py $_)) -gt 2 })
+                if ($stray.Count -eq 0) { break }
+                foreach ($it in $stray) { $list.SetPosition($it.Index, (& $px $it), (& $py $it)) }
+            }
+            if ($stray.Count -gt 0) { Write-Warning "$($stray.Count) icons could not be placed exactly." }
         }
-        if ($stray.Count -gt 0) { Write-Warning "$($stray.Count) icons could not be placed exactly." }
+        finally { if ($snap) { $list.SnapToGrid = $true } }
 
         $summary = $items | Group-Object Category | ForEach-Object { "$($_.Name)=$($_.Count)" }
         Write-Host ("Arranged: " + ($summary -join ', ') + '. Undo with: Arrange-Desktop.cmd -Restore')
