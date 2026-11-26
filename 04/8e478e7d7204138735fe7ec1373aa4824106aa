@@ -1,0 +1,37 @@
+.gitignore
+  s_cfcc974dec3dcd::t_c9493b3ef74bef 1-5
+Arrange-Desktop.ps1
+  s_d9f60225c44b80::t_17e60fc81c4505 1-342
+README.md
+  s_d9f60225c44b80::t_40898f17bd8572 1-133
+config.json
+  s_d9f60225c44b80::t_40f5b1ee3b43f2 1-20
+lib/DesktopNative.cs
+  s_cfcc974dec3dcd::t_ca1cf39593055f 1-280
+Arrange-Desktop.cmd
+  s_d9f60225c44b80::t_46376853f1df4d 1-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "048e478e7d7204138735fe7ec1373aa4824106aa",
+  "prompts": {},
+  "sessions": {
+    "s_cfcc974dec3dcd": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "b6993094-c8dc-4e7c-92d6-d1842c25c880",
+        "model": "unknown"
+      },
+      "human_author": "dawood-myob <dawood.ali@myob.com>"
+    },
+    "s_d9f60225c44b80": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "a2d262e0-43ca-42cc-a694-2913e14ab461",
+        "model": "unknown"
+      },
+      "human_author": "dawood-myob <dawood.ali@myob.com>"
+    }
+  }
+}
